@@ -1,8 +1,8 @@
-package main
+package dyzone
 
 import (
-	"diezone/domain"
-	"diezone/downloader"
+	"github.com/lauevrar77/dyzone/domain"
+	"github.com/lauevrar77/dyzone/downloader"
 )
 
 type Spider interface {

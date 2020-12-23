@@ -1,4 +1,4 @@
-module diezone
+module github.com/lauevrar77/dyzone
 
 go 1.15
 

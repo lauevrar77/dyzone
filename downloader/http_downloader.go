@@ -1,12 +1,13 @@
 package downloader
 
 import (
-	"diezone/domain"
 	"errors"
 	"fmt"
 	"io/ioutil"
 	"net/http"
 	"net/url"
+
+	"github.com/lauevrar77/dyzone/domain"
 )
 
 type httpDownloader struct {
