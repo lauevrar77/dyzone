@@ -62,7 +62,7 @@ func (resource *WebResource) ImagesUrls() ([]string, error) {
 	list := htmlquery.Find(doc, "//img/@src")
 	for _, n := range list {
 		url := htmlquery.SelectAttr(n, "src")
-		urls = append(urls, url)
+		urls = append(urls, makeUrlCannonical(url, resource.domain))
 	}
 
 	return urls, nil
@@ -81,7 +81,7 @@ func (resource *WebResource) JavascriptUrls() ([]string, error) {
 	list := htmlquery.Find(doc, "//script/@src")
 	for _, n := range list {
 		url := htmlquery.SelectAttr(n, "src")
-		urls = append(urls, url)
+		urls = append(urls, makeUrlCannonical(url, resource.domain))
 	}
 
 	return urls, nil
@@ -118,6 +118,22 @@ func (resource *WebResource) InternalLinksUrls() ([]string, error) {
 	return urls, nil
 }
 
+func (resource WebResource) ContentType() string {
+	return resource.contentType
+}
+
+func (resource WebResource) RawContent() []byte {
+	return resource.rawContent
+}
+
+func (resource WebResource) Domain() string {
+	return resource.domain
+}
+
+func (resource WebResource) URI() string {
+	return resource.uri
+}
+
 func (resource *WebResource) parseHtml() {
 	if !resource.IsWebPage() {
 		panic("Only web pages can be parsed to html")
@@ -127,4 +143,18 @@ func (resource *WebResource) parseHtml() {
 		stringContent := string(resource.rawContent)
 		resource.htmlContent = &stringContent
 	}
+}
+
+func makeUrlCannonical(urlString string, actualDomain string) string {
+	url, _ := url.Parse(urlString)
+
+	if len(url.Host) == 0 {
+		scheme := "http"
+		if len(url.Scheme) > 0 {
+			scheme = url.Scheme
+		}
+		urlString = fmt.Sprintf("%s://%s/%s", scheme, actualDomain, urlString)
+	}
+
+	return urlString
 }
