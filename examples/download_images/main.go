@@ -3,6 +3,7 @@ package main
 import (
 	"bufio"
 	"fmt"
+	"log"
 	"os"
 	"strings"
 
@@ -17,16 +18,16 @@ type ImageSpider struct {
 }
 
 func (spider ImageSpider) OnWebResourceFetched(webResource *domain.WebResource) ([]string, *domain.WebResource, error) {
-	fmt.Println("Spider got result")
+	log.Println("Spider got result")
 	if webResource.IsWebPage() {
-		fmt.Println("Spider result is a web page")
+		log.Println("Spider result is a web page")
 		imageUrls, err := webResource.ImagesUrls()
 
 		if err != nil {
-			fmt.Println("Could not extract images")
+			log.Println("Could not extract images")
 			return imageUrls, nil, err
 		}
-		fmt.Printf("Web page contains %d images \n", len(imageUrls))
+		log.Printf("Web page contains %d images \n", len(imageUrls))
 
 		return imageUrls, nil, nil
 	}
@@ -52,7 +53,7 @@ func isAcceptedContentType(contentType string) bool {
 type ImagePipeline struct{}
 
 func (pipeline ImagePipeline) ManageWebResource(webResource *domain.WebResource) (*domain.WebResource, error) {
-	fmt.Println("Saving image to 'images' directory")
+	log.Println("Saving image to 'images' directory")
 
 	rawContent := webResource.RawContent()
 
@@ -64,8 +65,8 @@ func (pipeline ImagePipeline) ManageWebResource(webResource *domain.WebResource)
 	imageName := imageNameParts[len(imageNameParts)-1]
 	file, err := os.Create(fmt.Sprintf("images/%s", imageName))
 	if err != nil {
-		fmt.Println("Cannot open file")
-		fmt.Println(err)
+		log.Println("Cannot open file")
+		log.Println(err)
 		return nil, err
 	}
 	writer := bufio.NewWriter(file)

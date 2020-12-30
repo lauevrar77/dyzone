@@ -1,8 +1,6 @@
 package dyzone
 
 import (
-	"fmt"
-
 	"github.com/lauevrar77/dyzone/domain"
 	"github.com/lauevrar77/dyzone/downloader"
 )
@@ -22,15 +20,12 @@ type SpiderRunner struct {
 }
 
 func (runner SpiderRunner) Run(startUrl string) ([]*domain.WebResource, error) {
-	fmt.Println(startUrl)
 	resources := make([]*domain.WebResource, 0)
 
 	// Run Downloader
 	webResource, err := runner.downloader.Download(startUrl)
 
 	if err != nil {
-		fmt.Println("Downloader error")
-
 		return nil, err
 	}
 
@@ -46,7 +41,7 @@ func (runner SpiderRunner) Run(startUrl string) ([]*domain.WebResource, error) {
 		webResource, err = runner.pipeline.ManageWebResource(webResource)
 
 		if err != nil {
-			return nil, nil
+			return nil, err
 		}
 
 		if webResource != nil {
