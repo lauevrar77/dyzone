@@ -42,9 +42,24 @@ func TestNewWebResource(t *testing.T) {
 	}
 }
 
-func TestIsWebPage(t *testing.T) {
+func TestIsWebPageHTML(t *testing.T) {
 	content := make([]byte, 10)
 	webResource, err := NewWebResource("https://example.com/home", "text/html", content)
+
+	if err != nil {
+		t.Log("Could not create WebResource")
+		t.FailNow()
+	}
+
+	if !webResource.IsWebPage() {
+		t.Log("Not detected as web page")
+		t.Fail()
+	}
+}
+
+func TestIsWebPageHTM(t *testing.T) {
+	content := make([]byte, 10)
+	webResource, err := NewWebResource("https://example.com/home", "text/htm", content)
 
 	if err != nil {
 		t.Log("Could not create WebResource")

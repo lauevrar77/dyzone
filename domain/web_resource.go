@@ -31,7 +31,7 @@ func NewWebResource(webUrl string, contentType string, rawContent []byte) (*WebR
 }
 
 func (resource WebResource) IsWebPage() bool {
-	return strings.Contains(resource.contentType, "text/html")
+	return strings.Contains(resource.contentType, "text/html") || strings.Contains(resource.contentType, "text/htm")
 }
 
 func (resource *WebResource) StyleSheetsUrls() ([]string, error) {
