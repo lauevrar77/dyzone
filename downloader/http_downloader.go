@@ -10,13 +10,18 @@ import (
 	"github.com/lauevrar77/dyzone/domain"
 )
 
+type HttpClient interface {
+	Get(string) (*http.Response, error)
+}
+
 type httpDownloader struct {
-	httpClient http.Client
+	httpClient HttpClient
 }
 
 func NewHttpDownloader() httpDownloader {
+	client := &http.Client{}
 	return httpDownloader{
-		httpClient: http.Client{},
+		httpClient: client,
 	}
 }
 
@@ -36,6 +41,10 @@ func (downloader httpDownloader) Download(url string) (*domain.WebResource, erro
 
 	defer response.Body.Close()
 	return webResource, nil
+}
+
+func (downloader *httpDownloader) ChangeHttpClient(client HttpClient) {
+	downloader.httpClient = client
 }
 
 func (downloader httpDownloader) requestFailed(response *http.Response) bool {
@@ -67,12 +76,15 @@ func (downloader httpDownloader) responseToWebResource(requestUrl string, respon
 		return nil, err
 	}
 
-	webResource := domain.NewWebResource(
-		responseUrl.Host,
-		responseUrl.Path,
+	webResource, err := domain.NewWebResource(
+		responseUrl.String(),
 		response.Header.Get("Content-Type"),
 		body,
 	)
 
-	return &webResource, nil
+	if err != nil {
+		return nil, err
+	}
+
+	return webResource, nil
 }

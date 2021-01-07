@@ -41,7 +41,7 @@ func (runner SpiderRunner) Run(startUrl string) ([]*domain.WebResource, error) {
 		webResource, err = runner.pipeline.ManageWebResource(webResource)
 
 		if err != nil {
-			return nil, nil
+			return nil, err
 		}
 
 		if webResource != nil {
@@ -63,4 +63,12 @@ func (runner SpiderRunner) Run(startUrl string) ([]*domain.WebResource, error) {
 	}
 
 	return resources, nil
+}
+
+func NewSpiderRunner(downloader downloader.Downloader, spider Spider, pipeline WebResourcePipeline) SpiderRunner {
+	return SpiderRunner{
+		downloader: downloader,
+		spider:     spider,
+		pipeline:   pipeline,
+	}
 }
